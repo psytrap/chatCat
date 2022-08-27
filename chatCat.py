@@ -187,13 +187,19 @@ while True:
     print("Processing in seconds:", delta.total_seconds())
 
     print("Decoded:", decoded)
-    if last_pic + datetime.timedelta(seconds=20) < datetime.datetime.now():
-        isWritten = cv2.imwrite('archive/image-'+today+'.jpg', frame)
-        last_pic = datetime.datetime.now()
+    # archived pics
+    #if last_pic + datetime.timedelta(seconds=20) < datetime.datetime.now():
+    #    isWritten = cv2.imwrite('archive/image-'+today+'.jpg', frame)
+    #    last_pic = datetime.datetime.now()
     print("Probably a cat:", 100. * probability, "%")
-    if probability < 0.1 and first_iteration is False:
+    now = datetime.datetime.now()
+    if now.isoweekday() == 7 and now.time().hour == 10 and now.time().minute == 0:
+        hearbeat = True
+    else:
+        hearbeat = False
+    if probability < 0.1 and first_iteration is False and not hearbeat:
         cat_delta = datetime.datetime.now() - cat_last_time
-        if cat_delta.total_seconds() > 300:
+        if cat_delta.total_seconds() > 300: # retrigger not before 5 minutes = 10 frames
             cat = False
     else:
         cat_last_time = datetime.datetime.now()
@@ -205,7 +211,7 @@ while True:
 
     #if result is True:
     #    pygame.mixer.music.play()
-    time.sleep(10)
+    time.sleep(30)
 
 
 
